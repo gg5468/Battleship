@@ -1,4 +1,4 @@
-﻿using Model.Model;
+﻿using Model;
 
 namespace ModelTests;
 
@@ -12,7 +12,7 @@ public class GridTests
         int columns = 10;
 
         var grid = new Grid(rows, columns);
-        
+
         Assert.AreEqual(50, grid.Squares.Count());
     }
 
