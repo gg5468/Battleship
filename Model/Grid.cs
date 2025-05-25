@@ -1,8 +1,8 @@
 ﻿namespace Model;
 
-public class Grid
+public abstract class Grid
 {
-    public Grid(int rows, int columns)
+    protected Grid(int rows, int columns)
     {
         Rows = rows;
         Columns = columns;
@@ -21,17 +21,19 @@ public class Grid
     public readonly int Rows;
     public readonly int Columns;
 
-    private readonly Square?[,] squares;
+    protected readonly Square?[,] squares;
 
-    public IEnumerable<Square> Squares
+    public virtual IEnumerable<Square> Squares
     {
-        get { return squares.Cast<Square>().Where(s => s != null); }
+        get { return squares.Cast<Square>(); }
     }
 
     public IEnumerable<IEnumerable<Square>> GetAvailablePlacements(int length)
     {
         return GetHorizontalAvailablePlacements(length).Concat(GetVerticalAvailablePlacements(length));
     }
+
+    protected abstract bool IsSquareAvailable(int row, int column);
 
     private IEnumerable<IEnumerable<Square>> GetHorizontalAvailablePlacements(int length)
     {
@@ -42,7 +44,7 @@ public class Grid
             var queue = new LimitedQueue<Square>(length);
             for (int c = 0; c < Columns; ++c)
             {
-                if (squares[r, c] != null)
+                if (IsSquareAvailable(r, c))
                 {
                     queue.Enqueue(squares[r, c]!);
                     if (queue.Count() == length)
@@ -68,7 +70,7 @@ public class Grid
             var queue = new LimitedQueue<Square>(length);
             for (int r = 0; r < Rows; ++r)
             {
-                if (squares[r, c] != null)
+                if (IsSquareAvailable(r, c))
                 {
                     queue.Enqueue(squares[r, c]!);
                     if (queue.Count() == length)
@@ -85,8 +87,4 @@ public class Grid
         return result;
     }
 
-    public void EleminateSquare(int row, int column)
-    {
-        squares[row, column] = null;
-    }
 }
