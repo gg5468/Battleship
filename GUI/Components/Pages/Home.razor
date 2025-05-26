@@ -1,0 +1,34 @@
+@page "/"
+@using GUI.Components.Shared
+@rendermode InteractiveServer
+<h3>Battleship Game</h3>
+
+@if (!showGrids)
+{
+    <label>
+    Rows:
+    <input type="number" @bind="rows" min="1" max="20" />
+    </label>
+    <label>
+        Columns:
+        <input type="number" @bind="columns" min="1" max="20" />
+    </label>
+    <button @onclick="ShowGrids">Show Grids</button>
+}
+else
+{
+    <BattleshipGrid Rows="rows" Columns="columns" />
+} 
+
+
+@code {
+    int rows = 10;
+    int columns = 10;
+    bool showGrids = false;
+
+    async Task ShowGrids()
+    {
+        showGrids = true;
+        await InvokeAsync(StateHasChanged);
+    }
+}
