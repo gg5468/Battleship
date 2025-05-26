@@ -1,0 +1,25 @@
+﻿@using Model
+@using GUI.Components.Shared
+
+@code {
+    // TODO: Add turns, players and events
+    [Parameter]
+    public int Rows { get; set; }
+
+    [Parameter]
+    public int Columns { get; set; }
+
+    FleetGrid? fleetGrid { get; set; }
+    ShotsGrid? shotsGrid { get; set; }
+
+    protected override void OnParametersSet()
+    {
+        // playerObject.Fleet
+        fleetGrid = new FleetGrid(Rows, Columns);
+        shotsGrid = new ShotsGrid(Rows, Columns);
+    }
+
+}
+
+
+<BattleshipGrid FleetGrid="fleetGrid" ShotsGrid="shotsGrid"/>

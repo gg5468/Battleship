@@ -1,5 +1,5 @@
 @page "/"
-@using GUI.Components.Shared
+@using GUI.Components
 @rendermode InteractiveServer
 <h3>Battleship Game</h3>
 
@@ -13,11 +13,12 @@
         Columns:
         <input type="number" @bind="columns" min="1" max="20" />
     </label>
-    <button @onclick="ShowGrids">Show Grids</button>
+    <button @onclick="ShowGrids">Play</button>
 }
 else
 {
-    <BattleshipGrid Rows="rows" Columns="columns" />
+    <button @onclick="ShowGrids">Menu</button>
+    <Game Rows="rows" Columns="columns" />
 } 
 
 
@@ -26,9 +27,9 @@ else
     int columns = 10;
     bool showGrids = false;
 
-    async Task ShowGrids()
+    void ShowGrids()
     {
-        showGrids = true;
-        await InvokeAsync(StateHasChanged);
+        showGrids = !showGrids;
+       // await InvokeAsync(StateHasChanged);
     }
 }

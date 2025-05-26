@@ -1,5 +1,13 @@
 ﻿@using Model
 
+@code {
+    [Parameter]
+    public FleetGrid fleetGrid { get; set; } = default!;
+
+    [Parameter]
+    public ShotsGrid shotsGrid { get; set; } = default!;
+}
+
 <div class="grids-container">
     <div>
         <h4>Your Fleet</h4>
@@ -15,29 +23,15 @@
     <div>
         <h4>Your Shots</h4>
         <div class="grid">
-            @for (int row = 0; row < 10; row++)
+            @foreach (var square in shotsGrid.Squares)
             {
-                for (int col = 0; col < 10; col++)
-                {
-                    var square = shotsGrid.GetSquare(row, col);
-                    <div class="square">
-                        (@square.Row, @square.Column)
-                    </div>
-                }
+                <div class="square">
+                    (@square.Row, @square.Column)
+                </div>
             }
         </div>
     </div>
 </div>
-
-@code {
-    [Parameter]
-    public int Rows { get; set; }
-
-    [Parameter]
-    public int Columns { get; set; }
-    FleetGrid fleetGrid = new FleetGrid(10, 10);
-    ShotsGrid shotsGrid = new ShotsGrid(10, 10);
-}
 
 <style>
     .grids-container {
