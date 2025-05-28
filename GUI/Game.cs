@@ -32,7 +32,7 @@ public class Game
         Player1 = new Player(gridRows, gridColumns, shipLengths);
         Player2 = new Player(gridRows, gridColumns, shipLengths);
 
-        Turn = Turn.Player1; // Start with Player1's turn
+        Turn = Turn.Player1;
     }
 
     public void SwitchTurns()
@@ -68,6 +68,12 @@ public class Game
         {
             player.ShipsSunken++;
         }
+
+        if (result == HitResult.Missed)
+        {
+            square.ChangeState(SquareState.Missed);
+        }
+        
         SwitchTurns();
         return result;
     }
