@@ -1,5 +1,6 @@
 @page "/"
 @using GUI.Components
+@using GUI.Components.Shared
 @rendermode InteractiveServer
 <h3>Battleship Game</h3>
 
@@ -13,12 +14,12 @@
         Columns:
         <input type="number" @bind="columns" min="1" max="20" />
     </label>
-    <button @onclick="ShowGrids">Play</button>
+    <button @onclick="Play">Play</button>
 }
 else
 {
-    <button @onclick="ShowGrids">Menu</button>
-    <Game Rows="rows" Columns="columns" />
+    <button @onclick="Play">Menu</button>
+    <GameGrid game="game" />
 } 
 
 
@@ -27,9 +28,17 @@ else
     int columns = 10;
     bool showGrids = false;
 
-    void ShowGrids()
+    public Game? game;
+
+    void Play()
     {
         showGrids = !showGrids;
+        if (showGrids)
+        {
+            game = new Game(rows, columns);
+        } else {
+            game = null;
+        }
        // await InvokeAsync(StateHasChanged);
     }
-}
+}    

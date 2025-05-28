@@ -1,0 +1,115 @@
+﻿@using Model
+@rendermode InteractiveServer
+@code {
+
+    [Parameter]
+    public Game? game { get; set; }
+
+    FleetGrid? yourFleetGrid;
+    ShotsGrid? yourShotsGrid;
+
+    protected override void OnParametersSet()
+    {
+        if (game != null)
+        {
+            yourFleetGrid = new FleetGrid(game.GridRows, game.GridColumns);
+            yourShotsGrid = new ShotsGrid(game.GridRows, game.GridColumns);
+        }
+    }
+
+
+    void handleOnClick(Square square)
+    {
+        var result = game.HandleSquareClicked(square);
+        syncGrids(game.Player1);
+        syncGrids(game.Player2);
+    }
+
+    string colorSquare(Square square){
+        switch (square.SquareState) {
+            case SquareState.Sunken:
+                return "red";
+            case SquareState.Intact:
+                return "lightblue";
+            case SquareState.Hit:
+                return "orange";
+            case SquareState.Eliminated:
+                return "black";
+            case SquareState.Missed:
+                return "yellow";
+
+            default:
+                return "lightblue";
+        }
+    }
+
+    void syncGrids(Player player) {
+        foreach(var ship in player.PlayerFleet.Ships) {
+            foreach (var shipSquare in ship.Squares)
+            {
+                var gridSquare = yourShotsGrid.Squares.FirstOrDefault(s => s.Row == shipSquare.Row && s.Column == shipSquare.Column);
+                if (gridSquare != null)
+                {
+                    Console.WriteLine($"gridSquare: {shipSquare?.Row}, {shipSquare?.Column}, {shipSquare?.SquareState}");
+                    gridSquare.ChangeState(shipSquare.SquareState);
+                    
+                }
+
+            }
+        }
+    }
+}
+
+@if (game != null ) {
+    <div class="grids-container">
+        <div>
+            <h4>Your Fleet</h4>
+            <div class="grid">
+                @foreach (var square in yourFleetGrid.Squares)
+                {
+                    <div class="square" style="background-color: @(colorSquare(square));">
+                        (@square.Row, @square.Column)
+                    </div>
+                }
+            </div>
+        </div>
+        <div>
+            <h4>Your Shots</h4>
+            <div class="grid">
+                @foreach (var square in yourShotsGrid.Squares)
+                {
+                    <div class="square" style="background-color: @(colorSquare(square));" @onclick="() => handleOnClick(square)">
+                        (@square.Row, @square.Column)
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+}
+
+<style>
+    .grids-container {
+        display: flex;
+        gap: 40px;
+        margin-bottom: 20px;
+    }
+    .grid {
+        display: grid;
+        grid-template-columns: repeat(10, 1fr);
+        gap: 5px;
+        width: 100%;
+        max-width: 640px;
+    }
+
+    .square {
+        width: 60px;
+        height: 60px;
+        border: 1px solid black;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 12px;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+    }
+</style>
