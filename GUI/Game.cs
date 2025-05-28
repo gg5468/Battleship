@@ -8,7 +8,6 @@ public enum Turn {
 }
 public class Game
 {
-    // refactor into getters and setters
     public Turn Turn;
 
     public string? Winner;
@@ -52,9 +51,7 @@ public class Game
         if (Turn == Turn.Player2)
         {
             var target = Player2.Gunnery.Next();
-            Console.WriteLine($"Player2's turn. Targeting square at Row: {target.Row}, Column: {target.Column}");
             var result = HandleSquareClicked(target);
-            Console.WriteLine($"Result of Player2's attack: {result}");
             Player2.Gunnery.ProcessHitResult(result);
         }
     }
