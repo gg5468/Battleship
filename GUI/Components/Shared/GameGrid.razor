@@ -21,53 +21,47 @@
     void handleOnClick(Square square)
     {
         var result = game.HandleSquareClicked(square);
-        syncGrids(game.Player1);
-        syncGrids(game.Player2);
+        syncGrids(game.Player1,yourShotsGrid);
+        syncGrids(game.Player2,yourFleetGrid);
     }
 
-    string colorSquare(Square square){
-        switch (square.SquareState) {
-            case SquareState.Sunken:
-                return "red";
-            case SquareState.Intact:
-                return "lightblue";
-            case SquareState.Hit:
-                return "orange";
-            case SquareState.Eliminated:
-                return "black";
-            case SquareState.Missed:
-                return "yellow";
 
-            default:
-                return "lightblue";
-        }
+    string colorSquare(Square square, Grid grid){
+        string color; 
+        color = square.SquareState switch
+        {
+            SquareState.Sunken => "red",
+            SquareState.Hit => "orange",
+            SquareState.Missed => "green",
+            SquareState.Intact when grid == yourFleetGrid && game.Player2.PlayerFleet.Ships.SelectMany(s => s.Squares).Any(sq => sq.Row == square.Row && sq.Column == square.Column) => "yellow",
+            _ => "lightblue"
+        };
+        return color;
     }
 
-    void syncGrids(Player player) {
+    void syncGrids(Player player, Grid grid) {
         foreach(var ship in player.PlayerFleet.Ships) {
             foreach (var shipSquare in ship.Squares)
             {
-                var gridSquare = yourShotsGrid.Squares.FirstOrDefault(s => s.Row == shipSquare.Row && s.Column == shipSquare.Column);
+                var gridSquare = grid.Squares.FirstOrDefault(s => s.Row == shipSquare.Row && s.Column == shipSquare.Column);
                 if (gridSquare != null)
                 {
                     Console.WriteLine($"gridSquare: {shipSquare?.Row}, {shipSquare?.Column}, {shipSquare?.SquareState}");
                     gridSquare.ChangeState(shipSquare.SquareState);
-                    
                 }
-
             }
         }
     }
 }
 
-@if (game != null ) {
+@if (game.Winner == null ) {
     <div class="grids-container">
         <div>
             <h4>Your Fleet</h4>
             <div class="grid">
                 @foreach (var square in yourFleetGrid.Squares)
                 {
-                    <div class="square" style="background-color: @(colorSquare(square));">
+                    <div class="square" style="background-color: @(colorSquare(square,yourFleetGrid));">
                         (@square.Row, @square.Column)
                     </div>
                 }
@@ -78,12 +72,17 @@
             <div class="grid">
                 @foreach (var square in yourShotsGrid.Squares)
                 {
-                    <div class="square" style="background-color: @(colorSquare(square));" @onclick="() => handleOnClick(square)">
+                    <div class="square" style="background-color: @(colorSquare(square,yourShotsGrid));" @onclick="() => handleOnClick(square)">
                         (@square.Row, @square.Column)
                     </div>
                 }
             </div>
         </div>
+    </div>
+} else {
+    <div>
+        <h3>Game Over</h3>
+        <p>@game.Winner has won the game!</p>
     </div>
 }
 

@@ -1,4 +1,4 @@
-﻿namespace Model;
+﻿﻿namespace Model;
 
 public class FleetBuilder
 {
@@ -34,6 +34,7 @@ public class FleetBuilder
                 fleetGrid.EliminateSquare(coordinate.Row, coordinate.Column);
             }
         }
+
         return fleet;
     }
 }

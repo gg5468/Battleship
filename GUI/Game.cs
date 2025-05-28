@@ -11,9 +11,13 @@ public class Game
     // refactor into getters and setters
     public Turn Turn;
 
+    public string? Winner;
+
     //public event Action<Square> OnSquareClicked;
     public int GridRows;
     public int GridColumns;
+
+    public int shipCount;
 
     public Player Player1;
     public Player Player2;
@@ -22,6 +26,8 @@ public class Game
         GridRows = gridRows;
         GridColumns = gridColumns;
 
+        shipCount = 10;
+        Winner = null;
         int[] shipLengths = { 2, 2, 2, 2, 3, 3, 3, 4, 4, 5 };
         Player1 = new Player(gridRows, gridColumns, shipLengths);
         Player2 = new Player(gridRows, gridColumns, shipLengths);
@@ -31,31 +37,38 @@ public class Game
 
     public void SwitchTurns()
     {
+        if (Player1.ShipsSunken == shipCount)
+        {
+            Winner = "Player1";
+            return;
+        }
+        else if (Player2.ShipsSunken == shipCount)
+        {
+            Winner = "Player2";
+            return;
+        }
         Turn = Turn == Turn.Player1 ? Turn.Player2 : Turn.Player1;
+
+        if (Turn == Turn.Player2)
+        {
+            var target = Player2.Gunnery.Next();
+            Console.WriteLine($"Player2's turn. Targeting square at Row: {target.Row}, Column: {target.Column}");
+            var result = HandleSquareClicked(target);
+            Console.WriteLine($"Result of Player2's attack: {result}");
+            Player2.Gunnery.ProcessHitResult(result);
+        }
     }
     public HitResult HandleSquareClicked(Square square)
     {
+        Player player = Turn == Turn.Player1 ? Player1 : Player2;
         HitResult result;
-
-        if (Turn == Turn.Player1)
+        
+        result = player.PlayerFleet.Hit(square.Row, square.Column);
+        if (result == HitResult.Sunken)
         {
-            Console.WriteLine(square.SquareState);
-            result = Player2.PlayerFleet.Hit(square.Row, square.Column);
-            
+            player.ShipsSunken++;
         }
-        else
-        {
-            result = Player1.PlayerFleet.Hit(square.Row, square.Column);
-        }
-
-        Console.WriteLine(result);
-        square.ChangeState(result switch
-        {
-            HitResult.Missed => SquareState.Missed,
-            HitResult.Hit => SquareState.Hit,
-            HitResult.Sunken => SquareState.Sunken,
-            _ => square.SquareState // Default case, should not happen
-        });
+        SwitchTurns();
         return result;
     }
 }

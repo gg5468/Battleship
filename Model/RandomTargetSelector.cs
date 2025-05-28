@@ -1,7 +1,11 @@
-﻿namespace Model;
+﻿﻿namespace Model;
 
 public class RandomTargetSelector : ITargetSelector
 {
+    private readonly ShotsGrid grid;
+    private readonly int shipLength;
+    private readonly Random random = new();
+
     public RandomTargetSelector(ShotsGrid grid, int shipLength)
     {
         this.grid = grid;
@@ -13,10 +17,7 @@ public class RandomTargetSelector : ITargetSelector
         var placements = grid.GetAvailablePlacements(shipLength);
         var candidates = placements.SelectMany(s => s);
         var selectedIndex = random.Next(candidates.Count());
+
         return candidates.ElementAt(selectedIndex);
     }
-
-    private readonly ShotsGrid grid;
-    private readonly int shipLength;
-    private readonly Random random = new Random();
 }

@@ -1,10 +1,9 @@
-﻿namespace Model;
+﻿﻿namespace Model;
 
 public class FleetGrid : Grid
 {
     public FleetGrid(int rows, int columns) : base(rows, columns)
-    {
-    }
+    {}
 
     public override IEnumerable<Square> Squares
     {

@@ -1,4 +1,4 @@
-﻿namespace Model;
+﻿﻿namespace Model;
 
 public enum SquareState
 {
@@ -11,15 +11,16 @@ public enum SquareState
 
 public class Square
 {
+    public readonly int Row;
+    public readonly int Column;
+    public bool IsHit => (int)SquareState >= (int)SquareState.Hit;
+    public virtual SquareState SquareState { get; set; } = SquareState.Intact;
+
     public Square(int row, int column)
     {
         Row = row;
         Column = column;
-        SquareState = SquareState.Intact;
     }
-
-    public readonly int Row;
-    public readonly int Column;
 
     public void Hit()
     {
@@ -34,7 +35,19 @@ public class Square
         }
     }
 
-    public bool IsHit => (int)SquareState >= (int)SquareState.Hit;
+    public override bool Equals(object obj)
+    {
+        if (obj == null || GetType() != obj.GetType())
+        {
+            return false;
+        }
 
-    public SquareState SquareState { get; private set; }
+        Square other = (Square)obj;
+        return Row == other.Row && Column == other.Column;
+    }
+
+    public override int GetHashCode()
+    {
+        return HashCode.Combine(Row, Column);
+    }
 }

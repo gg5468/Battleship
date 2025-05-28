@@ -1,6 +1,4 @@
-﻿using System.Collections;
-
-namespace Model;
+﻿﻿namespace Model;
 
 public class LimitedQueue<T> : Queue<T>
 {
@@ -11,7 +9,7 @@ public class LimitedQueue<T> : Queue<T>
     }
     public new void Enqueue(T item)
     {
-        while(Count >= _maxItems)
+        while (Count >= _maxItems)
         {
             Dequeue();
         }
