@@ -6,14 +6,12 @@
 
 @if (!showGrids)
 {
-    <label>
-    Rows:
-    <input type="number" @bind="rows" min="1" max="20" />
-    </label>
-    <label>
-        Columns:
-        <input type="number" @bind="columns" min="1" max="20" />
-    </label>
+    <select @bind="dimensions">
+        @for (int i = 5; i <= 20; i += 5)
+        {
+            <option value="@i">@i</option>
+        }
+    </select>
     <button @onclick="Play">Play</button>
 }
 else
@@ -24,8 +22,7 @@ else
 
 
 @code {
-    int rows = 10;
-    int columns = 10;
+    int dimensions = 10;
     bool showGrids = false;
 
     public Game? game;
@@ -35,7 +32,7 @@ else
         showGrids = !showGrids;
         if (showGrids)
         {
-            game = new Game(rows, columns);
+            game = new Game(dimensions, dimensions);
         } else {
             game = null;
         }

@@ -2,7 +2,8 @@
 using Model;
 using System;
 
-public enum Turn {
+public enum Turn
+{
     Player1,
     Player2
 }
@@ -28,6 +29,11 @@ public class Game
         shipCount = 10;
         Winner = null;
         int[] shipLengths = { 2, 2, 2, 2, 3, 3, 3, 4, 4, 5 };
+        while (shipLengths.Sum() > gridRows * gridColumns / 3)
+        {
+            shipLengths = shipLengths.Take(shipLengths.Length - 1).ToArray();
+            shipCount--;
+        }
         Player1 = new Player(gridRows, gridColumns, shipLengths);
         Player2 = new Player(gridRows, gridColumns, shipLengths);
 
@@ -59,7 +65,7 @@ public class Game
     {
         Player player = Turn == Turn.Player1 ? Player1 : Player2;
         HitResult result;
-        
+
         result = player.PlayerFleet.Hit(square.Row, square.Column);
         if (result == HitResult.Sunken)
         {
@@ -70,7 +76,7 @@ public class Game
         {
             square.ChangeState(SquareState.Missed);
         }
-        
+
         SwitchTurns();
         return result;
     }

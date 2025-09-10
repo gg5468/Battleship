@@ -61,7 +61,7 @@
             <div class="grid">
                 @foreach (var square in yourFleetGrid.Squares)
                 {
-                    <div class="square" style="background-color: @(colorSquare(square,yourFleetGrid));">
+                    <div class="square" style="background-color: @(colorSquare(square,yourFleetGrid)); grid-row: @(square.Row + 1); grid-column: @(square.Column + 1);)">
                         (@square.Row, @square.Column)
                     </div>
                 }
@@ -72,7 +72,7 @@
             <div class="grid">
                 @foreach (var square in yourShotsGrid.Squares)
                 {
-                    <div class="square" style="background-color: @(colorSquare(square,yourShotsGrid));" @onclick="() => handleOnClick(square)">
+                    <div class="square" style="background-color: @(colorSquare(square,yourShotsGrid)); grid-row: @(square.Row + 1); grid-column: @(square.Column + 1)" @onclick="() => handleOnClick(square)">
                         (@square.Row, @square.Column)
                     </div>
                 }
@@ -88,27 +88,39 @@
 
 <style>
     .grids-container {
-        display: flex;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        grid-template-rows: 1fr;
+        width: 100vw;
+        height: 100vh;
         gap: 40px;
-        margin-bottom: 20px;
+        margin: 0;
+        box-sizing: border-box;
+        justify-items: stretch;
+        align-items: stretch;
     }
     .grid {
         display: grid;
-        grid-template-columns: repeat(10, 1fr);
-        gap: 5px;
         width: 100%;
-        max-width: 640px;
+        height: 100%;
+        box-sizing: border-box;
+        place-items: center;
+        overflow: hidden;
     }
-
     .square {
-        width: 60px;
-        height: 60px;
+        width: 100%;
+        height: 100%;
+        aspect-ratio: 1 / 1;
         border: 1px solid black;
         display: flex;
         align-items: center;
         justify-content: center;
-        font-size: 12px;
+        font-size: 10px;
         cursor: pointer;
         transition: background-color 0.3s ease;
+        overflow: hidden;
+        text-align: center;
+        white-space: nowrap;
+        word-break: keep-all;
     }
 </style>
